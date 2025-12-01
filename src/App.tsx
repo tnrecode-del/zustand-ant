@@ -1,5 +1,4 @@
 import React from 'react';
-// import { useStore } from '@/stores/useStore';
 import Board from './components/Board';
 import Square from './components/Square';
 import {useStore} from '@/stores/useStore';
@@ -7,7 +6,7 @@ import {useStore} from '@/stores/useStore';
 const App: React.FC = () => {
 
 
-  const {squares, setSquares, isX, setIsX, turnCount, setTurnCount} = useStore();
+  const {squares, setSquares, isX, setIsX, turnCount, setTurnCount, reset} = useStore();
 
   const winner = calculateWinner(squares);
 
@@ -16,6 +15,7 @@ const App: React.FC = () => {
       {squares.map((_, index) => (
         <Square
           key={index}
+          disabled={!!winner}
           value={ squares[index] }
           onClick={() => {
             if(squares[index] !== '') return;
@@ -31,6 +31,7 @@ const App: React.FC = () => {
       <p>{`Current Player: ${isX? 'X': 'O'}`}</p> 
       <p>{turnCount}</p>
       <h1>{winner && `Winner is: ${winner}`}</h1>
+      <h1>{winner || turnCount === 9 ? <Square disabled={false} value={'reset'} onClick={reset}/> : ''}</h1>
     </Board>
   );
 }

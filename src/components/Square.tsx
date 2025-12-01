@@ -1,6 +1,6 @@
 import React from "react";
 
-const Square: React.FC<{ value: string; onClick: () => void }> = ({ value, onClick }) => {
+const Square: React.FC<{ disabled: boolean, value: string; onClick: () => void }> = ({ disabled, value, onClick }) => {
   return (
     <button
       style={{
@@ -9,6 +9,7 @@ const Square: React.FC<{ value: string; onClick: () => void }> = ({ value, onCli
         fontSize: "24px",
         margin: "4px",
       }}
+      disabled={disabled}
       onClick={onClick}
     >
       {value}

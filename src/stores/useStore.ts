@@ -1,4 +1,5 @@
-import {create} from 'zustand';
+import { persist } from 'zustand/middleware';
+import { create } from 'zustand';
 
 
 interface StoreState {
@@ -8,14 +9,26 @@ interface StoreState {
     setIsX: (isX: boolean) => void;
     setSquares: (squares: string[]) => void;
     setTurnCount: (turnCount: number) => void;
-
+    reset: () => void;
 }
 
-export const useStore = create<StoreState>((set) => ({
-    turnCount: 1,
-    setTurnCount: (turnCount: number) => set({ turnCount }),
+const initialState = {
     isX: true,
-    setIsX: (isX: boolean) => set({ isX }),
     squares: Array(9).fill(''),
-    setSquares: (squares: string[]) => set({ squares }),
-}));    
+    turnCount: 0,
+};
+
+export const useStore = create<StoreState>()(
+    persist(
+        (set) => ({
+            ...initialState,
+            setIsX: (isX: boolean) => set({ isX }),
+            setSquares: (squares: string[]) => set({ squares }),
+            setTurnCount: (turnCount: number) => set({ turnCount }),
+            reset: () => set({ ...initialState }),
+        }),
+        {
+            name: 'tic-tac-toe-storage', // unique name
+        }
+    )       
+);    
