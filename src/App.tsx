@@ -1,20 +1,59 @@
 import React from 'react';
-import { useStore } from '@/stores/useStore';
+// import { useStore } from '@/stores/useStore';
+import Board from './components/Board';
+import Square from './components/Square';
+import {useStore} from '@/stores/useStore';
 
 const App: React.FC = () => {
-  const count = useStore((state) => state.count);
-  const increase = useStore((state) => state.increase);
-  const decrease = useStore((state) => state.decrease); 
+
+
+  const {squares, setSquares, isX, setIsX, turnCount, setTurnCount} = useStore();
+
+  const winner = calculateWinner(squares);
 
   return (
-    <div>
-      <h1>Hello, Zustand with Ant Design!</h1>
+    <Board>
+      {squares.map((_, index) => (
+        <Square
+          key={index}
+          value={ squares[index] }
+          onClick={() => {
+            if(squares[index] !== '') return;
+            const newSquares = squares.slice();
+            newSquares[index] = isX ? 'X' : 'O';
+            setSquares(newSquares);
+            setIsX(!isX);
+            setTurnCount(turnCount + 1);
+          }}
+        />
+      ))}
 
-      <input type="button" onClick={decrease} value={"-"} />
-      {count}
-      <input type="button" onClick={increase} value={"+"} />
-    </div>
+      <p>{`Current Player: ${isX? 'X': 'O'}`}</p> 
+      <p>{turnCount}</p>
+      <h1>{winner && `Winner is: ${winner}`}</h1>
+    </Board>
   );
+}
+
+
+const calculateWinner = (squares: string[]): string | null => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
 
 export default App;
